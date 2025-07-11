@@ -1,51 +1,65 @@
 import { useState } from "react";
+import Input from "./Input";
+import { isEmail, isNotEmpty, hasMinLength } from "../util/validation";
+import { useInput } from "./hooks/useInput";
 
-export default function Login() {
-  const [enteredValue, setEnterdValue] = useState({
-    email:'',
-    password:''
-  });
+export default function StateLogin() {
+  const {
+    value: emailValue,
+    handleInputChange: handleEmailChange,
+    handleInputBlur: handleEmailBlur,
+    hasError:emailHasError,
+  } = useInput("", (value) => isEmail(value) && isNotEmpty(value));
 
-  const emailIsInvalid = enteredValue.email.includes('@');
+  const {
+    value: passwordValue,
+    handleInputChange: handlepasswordChange,
+    handleInputBlur: handlePasswordBlur,
+    hasError:passwordHasError,
+  } = useInput("", (value) => hasMinLength(value,6));
+
 
   function handleSubmit(event) {
-    // event.preventDefault();
+    event.preventDefault();
     console.log(enteredValue);
+        console.log(emailHasError , passwordHasError);
+    if(emailHasError || passwordHasError){
+      
+    }
+    console.log(passwordValue,emailValue )
   }
 
-  function handleInputChange(identifier,event) {
-    setEnterdValue( prevValues => ({
-      ...prevValues,
-      [identifier] : event.target.value
-      }));
-  }
 
   
 
+
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+      <h2>StateLogin</h2>
 
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
-          <input
+
+          <Input
             id="email"
             type="email"
             name="email"
-            onChange={(event)=>handleInputChange('email',event)}
-            value={enteredValue.email}
+            onBlur={handleEmailBlur}
+            onChange={handleEmailChange}
+            error={emailHasError}
           />
         </div>
 
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
-          <input
+          <Input
             id="password"
             type="password"
             name="password"
-            onChange={(event)=>handleInputChange('password',event)}
-            value={enteredValue.password}
+            onBlur={handlePasswordBlur}
+            onChange={handlepasswordChange}
+            error={passwordHasError}
           />
         </div>
       </div>
